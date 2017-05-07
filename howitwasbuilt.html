@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Piazza Party - How it was Built</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="css/clean-blog.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    Menu <i class="fa fa-bars"></i>
+                </button>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="index.html">Home</a>
+                    </li>
+                    <li>
+                        <a href="aboutPiazzaParty.html">About</a>
+                    </li>
+                    <li>
+                        <a href="download.html">Download</a>
+                    </li>
+                    <li>
+                        <a href="howitwasbuilt.html">How it was Built</a>
+                    </li>
+                    <li>
+                        <a href="aboutus.html">Meet the Developers</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-color:salmon;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Learn about how we made Piazza Party</h1>
+                        <h2 class="subheading">We'll go over what technologies we used and the pipeline.</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Post Content -->
+    <article>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <p>This was a pretty neat project. We touched a lot of technologies and learned a lot of new things. As developers, we were super appreciative for all the helpful posts, open-source code, free APIs, and *good* documentation. We decided to do the same for our project!</p>
+
+                    <h2 class="section-heading">Acquiring Piazza Posts</h2>
+
+                    <p>You might have already guessed it, but the answer is web scraping and a lot of it! We wrote a python script using <a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/"><font color="#29264E">Beautiful Soup</font> </a> and <a href="http://phantomjs.org/"> <font color="#29264E"> PhantomJS</font></a>. Before using PhantomJS, we used <a href="http://www.seleniumhq.org/docs/01_introducing_selenium.jsp"> <font color="#29264E"> Selenium</font> </a> since it simulates your script by opening a browser where you can clearly see what is going on. We recommend writing your script to work with Selenium and then using PhantomJS. A few helpful links: <a href= "https://www.youtube.com/watch?v=XQgXKtPSzUI&t=161s"> <font color="#29264E"> https://www.youtube.com/watch?v=XQgXKtPSzUI&t=161s</font></a>, <a href="http://stackoverflow.com/questions/8255929/running-webdriver-chrome-with-selenium"><font color="#29264E"> http://stackoverflow.com/questions/8255929/running-webdriver-chrome-with-selenium</font></a>. *Make sure to close things properly* - our server stopped working because there were too many hanging processes from the web-scraping scripts that crashed or failed initially. You can always confirm whether you’ve closed things properly by doing a <i> “ps -ef | grep phantom”</i> and then killing that process with <i> “kill -9 (process id#)”</i>. </p>
+
+                    <p>We originally thought that we would automate this script every 24 hours, but for one class with more than 1000 posts, the script would often take about an hour long and imagine scraping data for 10 classes! How we resolved this was initially populating our database with all the data and then writing another script that grabs the “pinned”, “this week”, and “last week” posts from each course on Piazza. This script that populates our database reads in these newly generated files and only adds new posts. We wrote a <a href="https://help.ubuntu.com/community/CronHowto"> <font color="#29264E"> cron job</font></a> that runs these scripts and also sends an email to the team if the job failed or succeeded.</p>
+
+                    <h2 class="section-heading">Chrome Extension</h2>
+
+                    <p> *We heavily relied on Chrome’s documentation* <p>
+
+                    <p>The first thing we did was build a very simple chrome extension following this <a href= https://developer.chrome.com/extensions/getstarted><font color="#29264E">tutorial</font></a>. The next step was looking into “page actions” which means that the chrome extension can only be used on specific pages (in our case piazza.com). After that, we needed to figure out how to extract text as a user types into the “title” and “question” input boxes to send to our backend for processing. In order to interact with the Piazza webpage, we needed to use a content script that allows the developer to inject javaScript and CSS code into the webpage - this was how we got access to the elements to extract the text being typed in real time. This was also how we displayed the sidebar on the piazza website. We made use of Chrome’s messaging capabilities and POST requests to relay information to and from the back end. From there, we used our content scripts to display results and add additional features to our sidebar. </p>
+
+                    <h2 class="section-heading">Algorithms & Apis</h2>
+
+                    <p>We first generated a corpus by scraping several Piazza pages. The corpus we generated had about 400k words! We then calculated the frequencies of each word and then stored them in our database. As we populated the database with Piazza posts, we found which words were “key words” based off some threshold that was compared to the calculated <a href= https://en.wikipedia.org/wiki/Tf%E2%80%93idf><font color="#29264E">inverse term frequency</font></a>. By taking the inverse term frequency, we diminish the weight of terms that occur very frequently like a, the, to, etc. and increase the weight of words that occur rarely. We then stored each post corresponding to the key word it contains.</p>
+
+                    <p>As input is generated from a user, we process each word and also look at each word’s related words - for ex. Run vs running vs ran. With this set of words, we then query our database for all questions that correspond to each word. With these returned list of questions, we used a <a href= https://en.wikipedia.org/wiki/Bag-of-words_model><font color="#29264E"> bag of words model</font></a> to understand how similar the questions generated are similar to the question asked by dividing that number by the total number of words in that question to get a percentage of how similar that question is to the question asked. We optimized this analysis by also taking into consideration synonyms for ex. Sad, upset, disappointed. We broke the ties of similarly asked questions based on how frequently the question was asked. <a href=https://www.wolframalpha.com/examples/WordsAndLinguistics.html>Wolphram Alpha</a> had some cool and free APIs for getting synonyms and related words.</p>
+
+                    <h2 class="section-heading">Data Visualization Page</h2>
+
+                    <p> The data visualization page was built with <a href= http://getbootstrap.com/> <font color="#29264E">BootStrap</font></a>. We used a <a href=https://www.programmableweb.com/api/word-cloud-maker> <font color="#29264E"> word cloud API</font></a> to represent the top 50 keywords within a given date range and for a particular course. The API took care of coloring and amplifying words based on their frequencies. We also display the top 10 repeated questions by recording the questions a user clicks while using the tool. </p>
+
+                    <h2 class="section-heading">Environment</h2>
+
+                    <p> We used Amazon Web Services’ RDS for our database. We set up a MySQL instance on the AWS free tier, and connected to the database in our Java application using a JDBC driver connection. We populated the database with the necessary information received from the web-scraping. To deploy our application, we used an AWS EC2 instance to host our code on a  Ubuntu virtual machine. There is a lot of documentation for AWS, but this <a href=https://aws.amazon.com/getting-started/tutorials/launch-a-virtual-machine/> <font color="#29264E"> article</font></a> was particularly helpful. We then used NGINX to run our program on the cloud as a reverse proxy machine.</p>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <p class="copyright text-muted">Copyright &copy; Piazza Party 2017</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Contact Form JavaScript -->
+    <script src="js/jqBootstrapValidation.js"></script>
+    <script src="js/contact_me.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="js/clean-blog.min.js"></script>
+
+</body>
+
+</html>
